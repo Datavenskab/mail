@@ -10,21 +10,21 @@ from collections import namedtuple, OrderedDict
 
 import email.header
 import email.utils
-from tkmail.util import DecodingDecodedGenerator
+from dvmail.util import DecodingDecodedGenerator
 
 from emailtunnel import (
     SMTPForwarder, Message, InvalidRecipient, Envelope, logger,
 )
 
-import tkmail.address
+import dvmail.address
 
-from tkmail.address import (
+from dvmail.address import (
     GroupAlias,
     # PeriodAlias, DirectAlias,
 )
-from tkmail.dmarc import has_strict_dmarc_policy
-from tkmail.delivery_reports import parse_delivery_report
-import tkmail.headers
+from dvmail.dmarc import has_strict_dmarc_policy
+from dvmail.delivery_reports import parse_delivery_report
+import dvmail.headers
 from emailtunnel.mailhole import MailholeRelayMixin
 
 
@@ -76,7 +76,7 @@ class TKForwarder(SMTPForwarder, MailholeRelayMixin):
     """
 
     def __init__(self, *args, **kwargs):
-        self.year = tkmail.address.get_current_period()
+        self.year = dvmail.address.get_current_period()
         self.exceptions = set()
         self.delivered = 0
         self.deliver_recipients = {}
@@ -228,7 +228,7 @@ class TKForwarder(SMTPForwarder, MailholeRelayMixin):
 
     def handle_envelope(self, envelope, peer):
         # Call get_current_period only once per envelope
-        self.year = tkmail.address.get_current_period()
+        self.year = dvmail.address.get_current_period()
         if self.handle_delivery_report(envelope):
             return
         envelope.from_domain = self.get_from_domain(envelope)
@@ -294,7 +294,7 @@ class TKForwarder(SMTPForwarder, MailholeRelayMixin):
 
     def translate_recipient(self, rcptto):
         name, domain = rcptto.split('@')
-        recipients, origin = tkmail.address.translate_recipient(
+        recipients, origin = dvmail.address.translate_recipient(
             self.year, name, list_ids=True)
         if not recipients:
             logger.info("%s resolved to the empty list", name)
@@ -315,7 +315,7 @@ class TKForwarder(SMTPForwarder, MailholeRelayMixin):
         sender = self.get_envelope_mailfrom(envelope)
         list_name = str(group.origin).lower()
         is_group = isinstance(group.origin, GroupAlias)
-        headers = tkmail.headers.get_extra_headers(sender, list_name, is_group)
+        headers = dvmail.headers.get_extra_headers(sender, list_name, is_group)
         if self.REWRITE_FROM:
             orig_from = envelope.message.get_header("From")
             headers.append(("From", self.get_from_header(envelope, group)))
@@ -395,7 +395,7 @@ class TKForwarder(SMTPForwarder, MailholeRelayMixin):
         admin_message.add_header('Auto-Submitted', 'auto-replied')
 
         try:
-            headers = tkmail.headers.get_extra_headers(sender, 'tkmailerror',
+            headers = dvmail.headers.get_extra_headers(sender, 'tkmailerror',
                                                        is_group=True)
             for k, v in headers:
                 admin_message.add_header(k, v)

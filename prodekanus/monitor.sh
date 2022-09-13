@@ -1,3 +1,3 @@
 #!/bin/bash
-cd /home/tkammer/mail
-prodekanus/venv/bin/python -m tkmail.monitor
+cd /home/davskab/mail
+prodekanus/venv/bin/python -m dvmail.monitor

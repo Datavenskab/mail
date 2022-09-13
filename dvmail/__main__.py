@@ -2,7 +2,7 @@ import logging
 import argparse
 
 from emailtunnel import logger
-from tkmail.server import TKForwarder
+from dvmail.server import TKForwarder
 
 
 def configure_logging():

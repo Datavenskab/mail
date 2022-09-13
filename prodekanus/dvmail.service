@@ -1,0 +1,14 @@
+[Unit]
+Description=Datavenskab SMTP server
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+ExecStart=/home/davskab/mail/prodekanus/venv/bin/python -m dvmail
+Restart=on-failure
+WorkingDirectory=/home/davskab/mail
+User=davskab
+Group=davskab
+Environment=PYTHONPATH=/home/davskab/mail
+EnvironmentFile=/home/davskab/mail/prodekanus/mailhole_key.env

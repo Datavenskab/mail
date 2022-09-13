@@ -5,7 +5,7 @@ import smtplib
 import email.header
 
 from emailtunnel import SMTPReceiver, Envelope, logger
-from tkmail.server import TKForwarder
+from dvmail.server import TKForwarder
 import emailtunnel.send
 
 

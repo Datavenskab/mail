@@ -1,7 +1,7 @@
 import os
 import email
 
-from tkmail.delivery_reports import email_delivery_reports
+from dvmail.delivery_reports import email_delivery_reports
 
 
 counter = {'Apple<appleid@id.apple.com>': 0,
@@ -42,7 +42,7 @@ for base, report in email_delivery_reports():
         for k, v in undelivered_message.items():
             if k.lower() in ('return-path', 'received') or k.startswith('List-'):
                 continue
-            if k.lower() in ('from', 'date', 'subject') or 'TAAGEKAMMERET' in str(v).upper():
+            if k.lower() in ('from', 'date', 'subject') or 'DATAVENSKAB' in str(v).upper():
                 h = email.header.make_header(email.header.decode_header(v))
                 print('%s: %s' % (k, h))
         print('', flush=True)

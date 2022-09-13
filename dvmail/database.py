@@ -1,5 +1,5 @@
 import MySQLdb
-from tkmail.config import HOSTNAME, USERNAME, PASSWORD, DATABASE
+from dvmail.config import HOSTNAME, USERNAME, PASSWORD, DATABASE
 import pickle
 import base64
 

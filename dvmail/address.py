@@ -4,8 +4,8 @@ import functools
 from collections import namedtuple
 
 from emailtunnel import InvalidRecipient
-import tkmail.database
-from tkmail.config import ADMINS
+import dvmail.database
+from dvmail.config import ADMINS
 
 import tktitler as tk
 
@@ -61,7 +61,7 @@ def get_admin_emails():
 
     email_addresses = []
     try:
-        db = tkmail.database.Database()
+        db = dvmail.database.Database()
         email_addresses = db.get_admin_emails()
     except:
         pass
@@ -95,7 +95,7 @@ def translate_recipient(year, name, list_ids=False):
     """
 
     name = name.replace('$', 'S')  # KA$$ -> KASS hack
-    db = tkmail.database.Database()
+    db = dvmail.database.Database()
     recipient_ids, origin = parse_recipient(name.upper(), db, year)
     assert isinstance(recipient_ids, list) and isinstance(origin, list)
     assert len(recipient_ids) == len(origin)
