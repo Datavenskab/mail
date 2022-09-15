@@ -2,11 +2,11 @@ import logging
 import argparse
 
 from emailtunnel import logger
-from dvmail.server import TKForwarder
+from dvmail.server import DVForwarder
 
 
 def configure_logging():
-    file_handler = logging.FileHandler('tkmail.log', 'a')
+    file_handler = logging.FileHandler('dvmail.log', 'a')
     stream_handler = logging.StreamHandler(None)
     fmt = '[%(asctime)s %(levelname)s] %(message)s'
     datefmt = None
@@ -33,14 +33,14 @@ def main():
     relay_host = '127.0.0.1'
     relay_port = args.port
 
-    server = TKForwarder(
+    server = DVForwarder(
         receiver_host, receiver_port, relay_host, relay_port)
     try:
         server.run()
     except Exception as exn:
-        logger.exception('Uncaught exception in TKForwarder.run')
+        logger.exception('Uncaught exception in DVForwarder.run')
     else:
-        logger.info('TKForwarder exiting')
+        logger.info('DVForwarder exiting')
 
 
 if __name__ == "__main__":

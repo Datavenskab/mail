@@ -9,14 +9,14 @@ import textwrap
 import smtplib
 
 from emailtunnel import Message, decode_any_header, logger
-from tkmail.delivery_reports import parse_delivery_report
-import tkmail.headers
+from dvmail.delivery_reports import parse_delivery_report
+import dvmail.headers
 
 try:
-    from tkmail.address import get_admin_emails
+    from dvmail.address import get_admin_emails
 except ImportError:
-    print("Cannot import tkmail.address; stubbing out get_admin_emails")
-    get_admin_emails = lambda: ['mathiasrav@gmail.com']
+    print("Cannot import dvmail.address; stubbing out get_admin_emails")
+    get_admin_emails = lambda: ['andreas@xdamgaard.dk']
 
 
 MAX_SIZE = 10
@@ -148,7 +148,7 @@ def main():
     # to a very spammy-looking subject line in the body.
 
     body = textwrap.dedent("""
-    This is the mail system of TAAGEKAMMERET.
+    This is the mail system of Datavenskab.
 
     The following emails were not delivered to anyone.
 
@@ -175,7 +175,7 @@ def main():
     message = Message.compose(
         sender, recipient, '[TK-admin] Failed email delivery', body)
 
-    headers = tkmail.headers.get_extra_headers(sender, 'tkmailmonitor',
+    headers = dvmail.headers.get_extra_headers(sender, 'tkmailmonitor',
                                                is_group=True)
     for k, v in headers:
         message.add_header(k, v)

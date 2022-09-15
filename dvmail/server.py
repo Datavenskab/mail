@@ -37,14 +37,14 @@ def now_string():
     return datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S.%f")
 
 
-class TKForwarder(SMTPForwarder, MailholeRelayMixin):
+class DVForwarder(SMTPForwarder, MailholeRelayMixin):
     REWRITE_FROM = True
     STRIP_HTML = True
 
     MAIL_FROM = 'admin@TAAGEKAMMERET.dk'
 
     ERROR_TEMPLATE = """
-    This is the mail system of TAAGEKAMMERET.
+    This is the mail system of Datavenskab.
 
     The following exception was raised when processing the message below:
 
@@ -61,7 +61,7 @@ class TKForwarder(SMTPForwarder, MailholeRelayMixin):
     """
 
     ERROR_TEMPLATE_CONSTRUCTION = """
-    This is the mail system of TAAGEKAMMERET.
+    This is the mail system of Datavenskab.
 
     The following exception was raised when CONSTRUCTING AN ENVELOPE:
 
@@ -80,7 +80,7 @@ class TKForwarder(SMTPForwarder, MailholeRelayMixin):
         self.exceptions = set()
         self.delivered = 0
         self.deliver_recipients = {}
-        super(TKForwarder, self).__init__(*args, **kwargs)
+        super(DVForwarder, self).__init__(*args, **kwargs)
 
     def should_mailhole(self, message, recipient, sender):
         # Send everything to mailhole
@@ -88,7 +88,7 @@ class TKForwarder(SMTPForwarder, MailholeRelayMixin):
 
     def startup_log(self):
         logger.info(
-            'TKForwarder listening on %s:%s, relaying to %s:%s, GF year %s',
+            'DVForwarder listening on %s:%s, relaying to %s:%s, GF year %s',
             self.host, self.port, self.relay_host, self.relay_port, self.year)
 
     def log_receipt(self, peer, envelope):
@@ -235,13 +235,13 @@ class TKForwarder(SMTPForwarder, MailholeRelayMixin):
         envelope.strict_dmarc_policy = self.strict_dmarc_policy(envelope)
         reject_reason = self.reject(envelope)
         if reject_reason:
-            summary = 'Rejected by TKForwarder.reject (%s)' % reject_reason
+            summary = 'Rejected by DVForwarder.reject (%s)' % reject_reason
             logger.info('%s', summary)
             self.store_failed_envelope(envelope, summary, summary)
             return
         if not self.REWRITE_FROM and not self.STRIP_HTML:
             self.fix_headers(envelope.message)
-        return super(TKForwarder, self).handle_envelope(envelope, peer)
+        return super(DVForwarder, self).handle_envelope(envelope, peer)
 
     def fix_headers(self, message):
         # Fix References: header that has been broken by Postfix.
@@ -374,19 +374,19 @@ class TKForwarder(SMTPForwarder, MailholeRelayMixin):
             self.forward_to_admin(envelope, str_data, tb)
 
     def forward_to_admin(self, envelope, str_data, tb):
-        # admin_emails = tkmail.address.get_admin_emails()
+        # admin_emails = dvmail.address.get_admin_emails()
         admin_emails = ['mathiasrav@gmail.com']
 
-        sender = recipient = 'admin@TAAGEKAMMERET.dk'
+        sender = recipient = 'andreas@xdamgaard.dk'
 
         if envelope:
-            subject = '[TK-mail] Unhandled exception in processing'
+            subject = '[DV-mail] Unhandled exception in processing'
             body = textwrap.dedent(self.ERROR_TEMPLATE).format(
                 traceback=tb, mailfrom=envelope.mailfrom,
                 rcpttos=envelope.rcpttos, message=envelope.message)
 
         else:
-            subject = '[TK-mail] Could not construct envelope'
+            subject = '[DV-mail] Could not construct envelope'
             body = textwrap.dedent(self.ERROR_TEMPLATE_CONSTRUCTION).format(
                 traceback=tb, data=str_data)
 
@@ -395,7 +395,7 @@ class TKForwarder(SMTPForwarder, MailholeRelayMixin):
         admin_message.add_header('Auto-Submitted', 'auto-replied')
 
         try:
-            headers = dvmail.headers.get_extra_headers(sender, 'tkmailerror',
+            headers = dvmail.headers.get_extra_headers(sender, 'dvmailerror',
                                                        is_group=True)
             for k, v in headers:
                 admin_message.add_header(k, v)

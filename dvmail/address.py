@@ -35,7 +35,7 @@ class DirectAlias(DirectAliasBase):
 
 def get_current_period(db=None):
     if db is None:
-        db = tkmail.database.Database()
+        db = dvmail.database.Database()
     try:
         old_value = get_current_period.cached_value
         get_current_period.cached_value = db.get_current_period()
@@ -56,7 +56,7 @@ get_current_period.cached_value = None
 def get_admin_emails():
     """Resolve the group "admin" or fallback if the database is unavailable.
 
-    The default set of admins is set in the tkmail.database module.
+    The default set of admins is set in the dvmail.database module.
     """
 
     email_addresses = []
